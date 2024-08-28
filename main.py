@@ -3,6 +3,7 @@ from facades.user_facade import UserFacade as User
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 @app.route('/users', methods=['GET'])
 def index():
