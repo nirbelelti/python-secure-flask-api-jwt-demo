@@ -5,22 +5,23 @@ app = Flask(__name__)
 
 @app.route('/users', methods=['GET'])
 def index():
-    return
+    return User.get_index(request)
+
 @app.route('/user', methods=['GET'])
 def get_user():
     return
 
 @app.route('/user', methods=['POST'])
 def create():
-    return
+    return User.create_user()
 
 @app.route('/user', methods=['PUT'])
 def update():
-    return
+    return User.update_user()
 
 @app.route('/user', methods=['DELETE'])
 def delete():
-    return
+    return User.delete_user()
 
 if __name__ == '__main__':
 
