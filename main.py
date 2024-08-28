@@ -18,7 +18,7 @@ def get_user():
 
 @app.route('/user', methods=['POST'])
 def create():
-    return User.create_user()
+    return User.create_user(request)
 
 @app.route('/user', methods=['PUT'])
 def update():

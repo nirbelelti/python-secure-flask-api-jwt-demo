@@ -1,4 +1,4 @@
-
+from services.user_service import UserService
 class UserFacade:
     def __init__(self):
         pass
@@ -7,7 +7,7 @@ class UserFacade:
         return "Hello, World!"
 
     def create_user(self):
-        return "not implemented yet"
+        return UserService.create(self)
 
     def get_user_by_id(self, id):
         return "not implemented yet"
