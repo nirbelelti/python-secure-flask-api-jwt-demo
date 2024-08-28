@@ -26,7 +26,10 @@ class UserService:
         if not valid_request:
             return valid_request
         else:
-            new_user = User(username=request_data['username'], password=request_data['password'])
+            new_user = User(username=request_data['username'])
+            password = request_data['password']
+            new_user.hash_and_salt_password(password)
+
             db.session.add(new_user)
             db.session.commit()
             return jsonify({'message': 'User created successfully'}), 201
