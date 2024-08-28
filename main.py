@@ -1,4 +1,5 @@
 from flask import Flask, request
+from facades.user_facade import UserFacade as User
 
 
 app = Flask(__name__)
@@ -9,7 +10,7 @@ def index():
 
 @app.route('/user', methods=['GET'])
 def get_user():
-    return
+    return User.get_user_by_id(request.args.get('id'))
 
 @app.route('/user', methods=['POST'])
 def create():
