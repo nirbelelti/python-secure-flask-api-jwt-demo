@@ -1,9 +1,12 @@
 from flask import Flask, request
 from facades.user_facade import UserFacade as User
+from models.user import db
+
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db.init_app(app)
 
 @app.route('/users', methods=['GET'])
 def index():
