@@ -1,6 +1,19 @@
 import hashlib
+import os
+
 from flask import jsonify
 from models.user import User
+import jwt
+from datetime import datetime, timedelta
+
+jwt_key = os.environ.get('ENV_JWT_KEY', 'default_jwt_secret_key')  # Secret key for token generation
+
+
+def encode_jwt_token(payload):
+    secret_key = jwt_key
+    algorithm = 'HS256'
+    token = jwt.encode(payload, secret_key, algorithm=algorithm)
+    return token
 
 
 class AuthService:
@@ -27,6 +40,11 @@ class AuthService:
         )
 
         if hashed_password == stored_hash:
-            return jsonify({'access_token': 'here wil be implement a token'}), 200
+            payload = {
+                'user_id': user.id,
+                'exp': datetime.utcnow() + timedelta(minutes=15)
+            }
+            token = encode_jwt_token(payload)
+            return jsonify({'access_token': token}), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
