@@ -1,5 +1,6 @@
 from flask import Flask, request
 from facades.user_facade import UserFacade as User
+from facades.auth_facade import AuthFacade as Auth
 from models.user import db
 
 
@@ -27,6 +28,11 @@ def update():
 @app.route('/user', methods=['DELETE'])
 def delete():
     return User.delete_user()
+
+@app.route('/authenticate_user', methods=['POST'])
+def authenticate_user():
+    print("authenticating user")
+    return Auth.login(request)
 
 if __name__ == '__main__':
 
