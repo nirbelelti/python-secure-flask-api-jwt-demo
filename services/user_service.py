@@ -3,16 +3,16 @@ from models.user import User, db
 
 
 def validate_request(request_data):
-        if 'username' not in request_data or 'password' not in request_data:
-            return jsonify({'error': 'Missing username or password'}), 400
-        elif len(request_data['password']) < 8:
-            return jsonify({'error': 'Password must be at least 8 characters long'}), 400
-        elif len(request_data['username']) < 4:
-            return jsonify({'error': 'Username must be at least 4 characters long'}), 400
-        elif User.query.filter_by(username=request_data['username']).first():
-            return jsonify({'error': 'Username already exists'}), 400
-        else:
-            return True
+    if 'username' not in request_data or 'password' not in request_data:
+        return jsonify({'error': 'Missing username or password'}), 400
+    elif len(request_data['password']) < 8:
+        return jsonify({'error': 'Password must be at least 8 characters long'}), 400
+    elif len(request_data['username']) < 4:
+        return jsonify({'error': 'Username must be at least 4 characters long'}), 400
+    elif User.query.filter_by(username=request_data['username']).first():
+        return jsonify({'error': 'Username already exists'}), 400
+    else:
+        return True
 
 
 class UserService:
