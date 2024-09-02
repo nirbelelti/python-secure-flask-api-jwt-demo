@@ -34,6 +34,10 @@ def authenticate_user():
     print("authenticating user")
     return Auth.login(request)
 
+@app.route('/validate_token', methods=['POST'])
+def validate_token():
+    return Auth.validate_token(request)
+
 if __name__ == '__main__':
 
     app.run(debug=True)
