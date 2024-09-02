@@ -71,3 +71,8 @@ class AuthService:
         except jwt.InvalidTokenError:
             print("Invalid token. Access denied.")
         return None
+
+    def renew_token(self):
+        token = encode_jwt_token(self)
+        redis.setex(self['jti'], int(self['exp'].timestamp()), 'active')
+        return jsonify({'access_token': token}), 200
