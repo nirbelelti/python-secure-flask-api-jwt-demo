@@ -12,7 +12,7 @@ jwt_key = os.environ.get('ENV_JWT_KEY', 'default_jwt_secret_key')  # Secret key 
 redis_host = os.environ.get('REDIS_HOST', 'localhost')  # Redis host address
 redis_port = os.environ.get('REDIS_PORT', 6379)  # Redis port
 
-redis = redis.Redis(host= redis_host, port=redis_port, db=0)
+redis = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 
 def encode_jwt_token(payload):
