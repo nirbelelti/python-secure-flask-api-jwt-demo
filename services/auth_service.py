@@ -17,9 +17,7 @@ redis = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 
 def encode_jwt_token(payload):
-    secret_key = jwt_key
-    algorithm = 'HS256'
-    token = jwt.encode(payload, secret_key, algorithm=algorithm)
+    token = jwt.encode(payload, jwt_key, algorithm=jwt_algorithm)
     return token
 
 
