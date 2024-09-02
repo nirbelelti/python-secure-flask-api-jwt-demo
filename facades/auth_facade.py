@@ -17,7 +17,7 @@ class AuthFacade:
         auth_header = request.headers.get('Authorization')
         if auth_header and auth_header.startswith('Bearer '):
             token = auth_header.split(' ')[1]
-            decoded_payload = AuthService.validate_jwt_token(token)
+            decoded_payload = AuthService.validate_jwt(token)
             if decoded_payload:
                 new_payload = {
                     'user_id': decoded_payload['user_id'],
