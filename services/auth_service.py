@@ -52,6 +52,26 @@ class AuthService:
                 'jti': str(uuid.uuid4())
             }
             token = encode_jwt_token(payload)
+            redis.setex(payload['jti'], int(payload['exp'].timestamp()), 'active')
             return jsonify({'access_token': token}), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
+
+    def validate_jwt_token(self):
+        secret_key = jwt_key
+        algorithm = 'HS256'
+        print(self)
+        try:
+            decoded_payload = jwt.decode(self, secret_key, algorithms=[algorithm])
+            jti = decoded_payload['jti']
+            if redis.get(jti) is None:
+                print("Token has been revoked. Please log in again.")
+                return None
+            redis.delete(jti)
+            print("Token is valid")
+            return decoded_payload
+        except jwt.ExpiredSignatureError:
+            print("Token has expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            print("Invalid token. Access denied.")
+        return None
