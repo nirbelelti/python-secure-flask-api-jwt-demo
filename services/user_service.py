@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from models.user import User, db
 
 
@@ -34,11 +34,22 @@ class UserService:
             db.session.commit()
             return jsonify({'message': 'User created successfully'}), 201
 
-    def get_user(id):
-        return "not implemented yet"
+    @staticmethod
+    def get_user(user_id):
+        return User.query.get(user_id)
 
     def update(self):
-        return "not implemented yet"
+        user = g.current_user
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        else:
+            request_data = self.get_json()
+            if 'username' in request_data:
+                user.username = request_data['username']
+            if 'password' in request_data:
+                user.hash_and_salt_password(str(request_data['password']))
+            db.session.commit()
+            return jsonify({'message': 'User updated successfully'}), 200
 
     def delete(self):
         return "not implemented yet"
