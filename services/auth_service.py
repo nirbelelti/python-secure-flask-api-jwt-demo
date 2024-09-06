@@ -69,7 +69,6 @@ class AuthService:
             return jsonify({'error': 'Invalid credentials'}), 401
 
     def validate_jwt(self, token):
-
         try:
             decoded_payload = decode_jwt(token)
             if not decoded_payload or 'jti' not in decoded_payload:
@@ -92,6 +91,6 @@ class AuthService:
         self.redis.setex(payload['jti'], int(payload['exp'].timestamp()), 'active')
         return token
 
-    def revoke_token(self):
-        self.redis.delete(self)
+    def revoke_token(self, jti):
+        self.redis.delete(jti)
         return jsonify({'message': 'Token has been revoked'}), 200
