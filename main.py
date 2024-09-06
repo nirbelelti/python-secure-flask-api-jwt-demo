@@ -8,44 +8,46 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db.init_app(app)
 
-
+user_facade = User()
+auth_facade = Auth()
 @app.route('/user', methods=['POST'])
 def create():
-    return User.create_user(request)
+    return user_facade.create_user(request)
 
 
 @app.route('/user', methods=['GET'])
 @jwt_required
 def get_user():
-    return User.get_user_by_id()
+    return user_facade.get_user_by_id()
 
 
 @app.route('/user', methods=['PUT'])
 @jwt_required
 @get_current_user
 def update():
-    return User.update_user(request)
+    return user_facade.update_user(request)
 
 
 @app.route('/user', methods=['DELETE'])
 @jwt_required
+@get_current_user
 def delete():
-    return User.delete_user()
+    return user_facade.delete_user()
 
 
 @app.route('/authenticate_user', methods=['POST'])
 def authenticate_user():
-    return Auth.login(request)
+    return auth_facade.login(request)
 
 
 @app.route('/validate_token', methods=['POST'])
 def validate_token():
-    return Auth.validate_token(request)
+    return auth_facade.validate_token(request)
 
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    return Auth.logout(request)
+    return auth_facade.logout(request)
 
 
 if __name__ == '__main__':
