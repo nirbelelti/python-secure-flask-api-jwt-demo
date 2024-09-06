@@ -17,8 +17,8 @@ def validate_request(request_data):
 
 class UserService:
 
-    def create(self):
-        request_data = self.get_json()
+    def create(self, request):
+        request_data = request.get_json()
         valid_request = validate_request(request_data)
         if not valid_request:
             return valid_request
@@ -35,12 +35,12 @@ class UserService:
     def get_user(user_id):
         return User.query.get(user_id)
 
-    def update(self):
+    def update(self, request):
         user = g.current_user
         if not user:
             return jsonify({'error': 'User not found'}), 404
         else:
-            request_data = self.get_json()
+            request_data = request.get_json()
             if 'username' in request_data:
                 user.username = request_data['username']
             if 'password' in request_data:
