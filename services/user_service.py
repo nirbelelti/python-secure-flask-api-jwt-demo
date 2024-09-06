@@ -17,9 +17,6 @@ def validate_request(request_data):
 
 class UserService:
 
-    def index(self):
-        return "Hello, World!"
-
     def create(self):
         request_data = self.get_json()
         valid_request = validate_request(request_data)
