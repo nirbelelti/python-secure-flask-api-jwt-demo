@@ -8,25 +8,37 @@ from flask import jsonify
 from models.user import User
 import datetime
 
-jwt_key = os.environ.get('ENV_JWT_KEY', 'default_jwt_secret_key')  # Secret key for token generation
-jwt_algorithm = 'HS256'
-redis_host = os.environ.get('REDIS_HOST', 'localhost')  # Redis host address
-redis_port = os.environ.get('REDIS_PORT', 6379)  # Redis port
-
-redis = redis.Redis(host=redis_host, port=redis_port, db=0)
+jwt_key = os.environ.get('ENV_JWT_KEY', 'default_jwt_secret_key')
 
 
 def encode_jwt_token(payload):
-    token = jwt.encode(payload, jwt_key, algorithm=jwt_algorithm)
+    token = jwt.encode(payload, jwt_key, algorithm='HS256')
     return token
+
+
+def decode_jwt(token):
+    try:
+        decoded_payload = jwt.decode(token, jwt_key, algorithms=['HS256'])
+        print("Decoded payload:", decoded_payload)
+        return decoded_payload
+    except jwt.ExpiredSignatureError:
+        print("Token has expired.")
+    except jwt.InvalidTokenError:
+        print("Invalid token.")
+
+    return None
 
 
 class AuthService:
     def __init__(self):
-        pass
+        self.jwt_key = jwt_key
+        self.jwt_algorithm = 'HS256'
+        self.redis_host = os.environ.get('REDIS_HOST', 'localhost')
+        self.redis_port = os.environ.get('REDIS_PORT', 6379)
+        self.redis = redis.Redis(host=self.redis_host, port=self.redis_port, db=0)
 
-    def authenticate_user(self):
-        request_data = self.get_json()
+    def authenticate_user(self, request):
+        request_data = request.get_json()
         user = User.query.filter_by(username=request_data['username']).first()
         password = request_data['password']
 
@@ -60,7 +72,7 @@ class AuthService:
 
         try:
             decoded_payload = decode_jwt(token)
-            if 'jti' not in decoded_payload:
+            if not decoded_payload or 'jti' not in decoded_payload:
                 return None
             jti = decoded_payload['jti']
             if self.redis.get(jti) is None:
