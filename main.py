@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, g
 from facades.user_facade import UserFacade as User
 from facades.auth_facade import AuthFacade as Auth
 from models.user import db
@@ -7,11 +7,6 @@ from utils.jwt_decoder import jwt_required, get_current_user
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db.init_app(app)
-
-
-@app.route('/users', methods=['GET'])
-def index():
-    return User.get_index(request)
 
 
 @app.route('/user', methods=['POST'])
@@ -29,7 +24,7 @@ def get_user():
 @jwt_required
 @get_current_user
 def update():
-    return User.update_user()
+    return User.update_user(request)
 
 
 @app.route('/user', methods=['DELETE'])
