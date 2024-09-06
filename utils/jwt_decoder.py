@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, request, jsonify
+from flask import g, request, jsonify
 
 from services.auth_service import AuthService as AuthService
 from services.user_service import UserService as UserService
@@ -27,3 +27,18 @@ def jwt_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
+def get_current_user(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user_id = g.decoded_token.get('user_id')
+        if user_id:
+            user = user_service.get_user(user_id)
+            if user:
+                g.current_user = user
+                return f(*args, **kwargs)
+            else:
+                return jsonify({'error': 'User not found'}), 404
+        else:
+            return jsonify({'error': 'Invalid token payload'}), 401
+    return decorated
