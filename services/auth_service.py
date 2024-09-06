@@ -59,7 +59,7 @@ class AuthService:
         if hashed_password == stored_hash:
             payload = {
                 'user_id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=35),
                 'jti': str(uuid.uuid4())
             }
             token = encode_jwt_token(payload)
@@ -78,7 +78,7 @@ class AuthService:
             if self.redis.get(jti) is None:
                 print("Token has been revoked. Please log in again.")
                 return None
-            redis.delete(jti)
+        #    self.redis.delete(jti)
             print("Token is valid")
             return decoded_payload
         except jwt.ExpiredSignatureError:
