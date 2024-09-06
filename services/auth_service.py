@@ -51,16 +51,19 @@ class AuthService:
                 'jti': str(uuid.uuid4())
             }
             token = encode_jwt_token(payload)
-            redis.setex(payload['jti'], int(payload['exp'].timestamp()), 'active')
+            self.redis.setex(payload['jti'], int(payload['exp'].timestamp()), 'active')
             return jsonify({'access_token': token}), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
 
-    def validate_jwt(self):
+    def validate_jwt(self, token):
+
         try:
-            decoded_payload = jwt.decode(self, jwt_key, algorithms=[jwt_algorithm])
+            decoded_payload = decode_jwt(token)
+            if 'jti' not in decoded_payload:
+                return None
             jti = decoded_payload['jti']
-            if redis.get(jti) is None:
+            if self.redis.get(jti) is None:
                 print("Token has been revoked. Please log in again.")
                 return None
             redis.delete(jti)
@@ -74,5 +77,9 @@ class AuthService:
 
     def renew_token(self):
         token = encode_jwt_token(self)
-        redis.setex(self['jti'], int(self['exp'].timestamp()), 'active')
+        self.redis.setex(self['jti'], int(self['exp'].timestamp()), 'active')
         return jsonify({'access_token': token}), 200
+
+    def revoke_token(self):
+        self.redis.delete(self)
+        return jsonify({'message': 'Token has been revoked'}), 200
