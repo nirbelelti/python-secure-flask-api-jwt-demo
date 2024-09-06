@@ -1,10 +1,10 @@
 from services.user_service import UserService
+
+
 class UserFacade:
     def __init__(self):
         pass
 
-    def get_index(self):
-        return "Hello, World!"
 
     def create_user(self):
         return UserService.create(self)
