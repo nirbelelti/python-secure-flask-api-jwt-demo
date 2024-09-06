@@ -47,4 +47,4 @@ class UserFacade:
         return jsonify(response), 200
 
     def delete_user(self):
-        return "not implemented yet"
+        return self.user_service.delete()

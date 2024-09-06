@@ -49,4 +49,11 @@ class UserService:
             return jsonify({'message': 'User updated successfully'}), 200
 
     def delete(self):
-        return "not implemented yet"
+        user = g.current_user
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        else:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({'message': 'User deleted successfully'}), 200
+
