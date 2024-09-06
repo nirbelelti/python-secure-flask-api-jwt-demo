@@ -87,10 +87,10 @@ class AuthService:
             print("Invalid token. Access denied.")
         return None
 
-    def renew_token(self):
-        token = encode_jwt_token(self)
-        self.redis.setex(self['jti'], int(self['exp'].timestamp()), 'active')
-        return jsonify({'access_token': token}), 200
+    def renew_token(self, payload):
+        token = encode_jwt_token(payload)
+        self.redis.setex(payload['jti'], int(payload['exp'].timestamp()), 'active')
+        return token
 
     def revoke_token(self):
         self.redis.delete(self)
