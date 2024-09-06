@@ -23,6 +23,7 @@ def jwt_required(f):
         valid_token = auth_service.validate_jwt(token)
         if not valid_token:
             return jsonify({"message": "Invalid or expired token"}), 401
-        return valid_token
+        g.decoded_token = valid_token
+        return f(*args, **kwargs)
     return decorated_function
 
