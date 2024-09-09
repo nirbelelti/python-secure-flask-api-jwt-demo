@@ -30,6 +30,13 @@ def decode_jwt(token):
 
 
 class AuthService:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(AuthService, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.jwt_key = jwt_key
         self.jwt_algorithm = 'HS256'
