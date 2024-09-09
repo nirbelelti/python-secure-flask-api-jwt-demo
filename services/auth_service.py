@@ -77,7 +77,7 @@ class AuthService:
             if self.redis.get(jti) is None:
                 print("Token has been revoked. Please log in again.")
                 return None
-        #    self.redis.delete(jti)
+            self.redis.delete(jti)
             print("Token is valid")
             return decoded_payload
         except jwt.ExpiredSignatureError:
